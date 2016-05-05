@@ -18,7 +18,7 @@ In order to do so, you will develop a code that is able to determine which fragm
 
 ## Input
 
-The downloadable corpus text of a sample manuscript with words separated by spaces.
+The downloadable https://contest.tuenti.net/resources/corpus.txt text of a sample manuscript with words separated by spaces.
 
 In the first line, the number of fragments to check from the manuscript, N.
 
